@@ -3,49 +3,48 @@
 @tailwind utilities;
 
 h1 {
-    @apply text-blue-900 mb-2 text-xl;
+  @apply text-blue-900 mb-2 text-xl;
 }
 
 input,
 textarea {
-    @apply border-2 border-gray-300 rounded-md px-1 w-full;
-    @apply mb-2;
+  @apply border-2 border-gray-300 rounded-md px-1 w-full;
+  @apply mb-2;
 }
 
 input:focus,
 textarea:focus {
-    @apply border-blue-900;
+  @apply border-blue-900;
 }
 
 label {
-    @apply text-blue-900;
+  @apply text-blue-900;
 }
 
-
 table.basic {
-    @apply w-full;
+  @apply w-full;
 }
 
 table.basic thead tr td {
-    @apply bg-blue-400;
+  @apply bg-blue-400;
 }
 
 table.basic tr td {
-    @apply border border-blue-600 p-1;
+  @apply border border-blue-600 p-1;
 }
 
 table.basic a {
-    @apply bg-blue-900 text-white text-sm py-1 rounded-md px-2 inline-flex gap-1 mr-1;
+  @apply bg-blue-900 text-white text-sm py-1 rounded-md px-2 inline-flex gap-1 mr-1;
 }
 
 .btn-primary {
-    @apply bg-blue-900 text-white px-4 rounded-md py-1;
+  @apply bg-blue-900 text-white px-4 rounded-md py-1;
 }
 
 .btn-red {
-    @apply bg-red-600 text-white px-4 py-2 mx-4 rounded-md;
+  @apply bg-red-600 text-white px-4 py-2 mx-4 rounded-md;
 }
 
 .btn-default {
-    @apply bg-gray-600 text-white px-4 py-2 mx-4 rounded-md;
+  @apply bg-gray-600 text-white px-4 py-2 mx-4 rounded-md;
 }

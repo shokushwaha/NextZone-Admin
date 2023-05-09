@@ -2,6 +2,7 @@ import Layout from "@/components/Layout"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import axios from "axios";
+import Head from 'next/head'
 
 export default function Products() {
 
@@ -14,6 +15,9 @@ export default function Products() {
     }, [])
     return (
         <>
+            <Head>
+                <title>Products</title>
+            </Head>
             <Layout>
                 <Link className="bg-green-600 text-white py-1 px-2 rounded-md " href={'/products/new'}>Add New Product</Link>
 

@@ -1,7 +1,11 @@
+import Head from "next/head"
 export default function Custom404() {
+
     return (
         <>
-
+            <Head>
+                <title>Error</title>
+            </Head>
             <section>
 
                 <div class="bg-black text-white">
