@@ -23,9 +23,15 @@ export default function Home() {
 
               {session?.user?.name}
             </span>
+
+
           </div>
 
         </div>
+        <span className="bg-textTertiary p-4 rounded-xl flex items-center justify-center mt-10 uppercase">
+
+          Analytics coming soon....
+        </span>
 
       </Layout>
     </>

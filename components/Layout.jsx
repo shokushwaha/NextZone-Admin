@@ -6,9 +6,9 @@ export default function Layout({ children }) {
     const { data: session } = useSession()
     const [showNav, setShowNav] = useState(false);
     if (!session) {
-        return (<div className="bg-blue-900 w-screen h-screen flex items-center" >
-            <div className="text-center w-full">
-                <button className="bg-white rounded-lg py-2 px-4" onClick={() => signIn('google')}> Login with Google</button>
+        return (<div className="bg-bgSecondary w-screen h-screen flex items-center" >
+            <div className=" text-center w-full">
+                <button className="bg-textTertiary rounded-lg py-2 px-4 hover:scale-110 " onClick={() => signIn('google')}> Login with Google</button>
             </div>
 
         </div >)
