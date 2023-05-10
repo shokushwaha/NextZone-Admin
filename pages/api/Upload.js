@@ -5,7 +5,7 @@ import mime from 'mime-types';
 import { isAdminRequest } from './auth/[...nextauth]';
 import { mongooseConnect } from '@/lib/mongoose';
 
-const bucketName = 'dawid-next-ecommerce';
+const bucketName = 'shobhit-next-ecommerce';
 
 export default async function handle(req, res) {
     await mongooseConnect();

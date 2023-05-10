@@ -51,3 +51,7 @@ table.basic a {
 .btn-delete {
   @apply bg-red-500;
 }
+
+.stat-box {
+  @apply flex flex-col bg-textTertiary rounded-xl h-40 w-40 items-center justify-center shadow-xl;
+}
