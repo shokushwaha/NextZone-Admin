@@ -7,13 +7,14 @@ img {
 }
 
 h1 {
-  @apply text-blue-900 mb-2 text-xl;
+  @apply text-gray-800 mb-8 font-semibold text-xl;
 }
 
 input,
 textarea,
 select {
-  @apply border-2 border-gray-300 rounded-md px-1 w-full;
+  @apply border border-gray-200 rounded-sm w-full py-2 px-4;
+  @apply shadow-sm;
   @apply mb-2;
 }
 
@@ -24,30 +25,29 @@ select:focus {
 }
 
 label {
-  @apply text-blue-900;
+  @apply text-gray-900;
 }
 
 table.basic {
-  @apply w-full;
+  @apply w-full bg-white rounded-sm shadow-md;
 }
 
 table.basic thead tr td {
-  @apply bg-blue-400;
+  @apply text-sm text-gray-600 uppercase border-b border-gray-400 px-4 py-2;
 }
 
 table.basic tr td {
-  @apply border border-blue-600 p-1;
+  @apply px-4 py-2;
 }
 
 table.basic a {
-  @apply bg-blue-900 text-white text-sm py-1 rounded-md px-2 inline-flex gap-1 mr-1;
+  @apply inline-flex mx-1 items-center gap-1 bg-bgPrimary;
 }
 
 .btn-primary {
-  @apply bg-blue-900 text-white px-4 rounded-md py-1;
+  @apply bg-blue-900 text-white px-4 rounded-md py-1 bg-bgPrimary;
 }
 
-.btn-red,
-.btn-default {
-  @apply bg-gray-600 text-white px-4 py-2 mx-4 rounded-md;
+.btn-delete {
+  @apply bg-red-500;
 }
