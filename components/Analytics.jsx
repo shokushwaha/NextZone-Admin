@@ -9,6 +9,7 @@ export default function Analytics() {
     const [loading, setLoading] = useState(true);
     const [countProducts, setCountProducts] = useState(0);
     const [countCategories, setCountCategories] = useState(0);
+    const [inventoryPrice, setInventoryPrice] = useState(0);
     useEffect(() => {
         axios.get('/api/countproducts').then(response => {
             setCountProducts(response.data);
@@ -18,10 +19,19 @@ export default function Analytics() {
             setCountCategories(response.data);
         }).catch(err => console.log(err.response.data))
 
+
+        axios.get('/api/products').then(res => {
+            const items = res.data;
+            let sum = 0;
+            for (const i of items)
+                sum = sum + i.price;
+            setInventoryPrice(sum);
+        })
+
         setLoading(false);
     }, [])
     return (
-        <>
+        <div className="overflow-x-hidden">
 
 
             <div className="flex items-center text-3xl px-4 pb-4 mb-4 w-full border-b-2 border-gray-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
@@ -133,7 +143,7 @@ export default function Analytics() {
                             <div className="stat-data">
                                 <span>
 
-                                    Pair Orders
+                                    Paid Orders
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
                                     1
@@ -162,9 +172,29 @@ export default function Analytics() {
                             </div>
                         </div>
 
+                        <div className="stat-box bg-gradient-to-r from-teal-200 to-teal-400 border-b-4 border-gray-600 rounded-md shadow-xl">
+                            <div className="stat-logo">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
+                                </svg>
+
+
+
+
+                            </div>
+                            <div className="stat-data">
+                                <span className="text-center">
+
+                                    Total Inventory Cost
+                                </span>
+                                <span className="text-4xl mt-2 font-extrabold text-center">
+                                    {inventoryPrice}
+                                </span>
+                            </div>
+                        </div>
 
                     </div >
             }
-        </>
+        </div>
     )
 }

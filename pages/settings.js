@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import axios from "axios";
 import Swal from 'sweetalert2'
-
+import Head from "next/head";
 
 export default function Settings() {
 
@@ -25,6 +25,7 @@ export default function Settings() {
 
     return (
         <Layout>
+            <Head><title>Settings</title></Head>
             <div className="flex flex-col gap-2 p-4">
                 <h1 className="text-black font-bold text-3xl flex items-center gap-2">
 

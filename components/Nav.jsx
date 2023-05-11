@@ -18,7 +18,9 @@ export default function Nav() {
     };
 
     return (
-        <aside className="top-0 text-white fixed w-full bg-bgGray h-full md:static md:w-auto md:h-full sm:min-h-screen transition-all px-4">
+
+
+        <aside className="top-0 text-white fixed w-full bg-bgGray min-h-screen md:static md:w-auto md:h-full sm:min-h-screen transition-all px-4">
             <Logo />
             <nav className="flex flex-col gap-2">
                 <div className="mb-4 mr-4"></div>
@@ -144,5 +146,6 @@ export default function Nav() {
                 </div>
             </nav>
         </aside>
+
     );
 }

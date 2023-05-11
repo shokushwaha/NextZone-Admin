@@ -4,7 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-
+import Head from "next/head";
 export default function EditProduct() {
     const router = useRouter();
     const { id } = router.query;
@@ -16,6 +16,7 @@ export default function EditProduct() {
 
     return (
         <Layout>
+            <Head><title>Delete Product</title></Head>
             <div className="m-4 flex items-center flex-col">
                 <p className="text-blue-900 text-xl my-4">You want to delete this product ?</p>
                 <div className="flex my-4 gap-4">

@@ -12,7 +12,7 @@ export default function Layout({ children }) {
     if (!session) {
         return (
             <div className="bg-blue-900 w-screen h-screen flex items-center align-middle">
-                <Head><title>NextJS Ecommerce - Admin Panel</title></Head>
+                <Head><title>Ecommerce - Admin Panel Login</title></Head>
                 <div className="text-center w-full">
                     <button
                         onClick={login}
@@ -26,10 +26,10 @@ export default function Layout({ children }) {
     }
 
     return (
-        <div className="bg-bgPrimary w-screen h-screen flex items-center align-middle">
+        <div className="bg-bgPrimary min-w-screen min-h-screen flex items-center align-middle">
             <div className="w-full min-h-screen flex">
                 <Nav />
-                <div className="bg-bgSecondary flex-grow ">
+                <div className="bg-bgSecondary flex-grow h-full min-h-screen  pb-10   ">
                     {children}
                 </div>
             </div>

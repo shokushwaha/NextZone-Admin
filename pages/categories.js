@@ -3,8 +3,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import Cookies from "js-cookie";
+import Head from "next/head";
 
 export default function Categories() {
+
     const [categoriesList, setCategoriesList] = useState([]);
     const [categoryData, setCategoryData] = useState({
         _id: null,
@@ -119,6 +121,7 @@ export default function Categories() {
         setProperties([]);
 
         getCategories();
+        window.location.reload();
     };
 
     const cancelEdit = (e) => {
@@ -135,6 +138,9 @@ export default function Categories() {
 
     return (
         <Layout>
+
+            <Head><title>Categories</title></Head>
+
             {deleteCategoryId ? (
                 <Modal
                     nowOpen={true}

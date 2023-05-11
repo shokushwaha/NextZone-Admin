@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
+import Head from "next/head";
 export default function Products() {
     const [productsList, setProductsList] = useState([]);
 
@@ -14,6 +14,7 @@ export default function Products() {
 
     return (
         <Layout>
+            <Head><title>Products</title></Head>
             <Link
                 href={"/products/new"}
                 className=" save-btn "
