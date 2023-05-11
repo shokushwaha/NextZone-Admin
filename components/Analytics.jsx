@@ -47,7 +47,7 @@ export default function Analytics() {
                         Hold on, Loading....
                     </div>
                     :
-                    <div className="flex grow justify-around  gap-28 flex-wrap">
+                    <div className="flex grow justify-around  gap-28 flex-wrap pb-10">
 
 
                         <div className="stat-box bg-gradient-to-r from-green-200 to-green-500 border-b-4 border-green-600 rounded-md shadow-xl">
