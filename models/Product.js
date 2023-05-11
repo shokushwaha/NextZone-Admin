@@ -4,7 +4,7 @@ const ProductPropertiesSchema = new Schema({
     name: { type: String, required: true },
     values: { type: String, required: true },
     property: { type: Schema.Types.ObjectId, ref: 'Property', required: true }
-});
+}, { timestamps: true });
 
 const ProductSchema = new Schema({
     title: { type: String, required: true },
@@ -13,6 +13,6 @@ const ProductSchema = new Schema({
     images: [{ type: String }],
     properties: [{ type: ProductPropertiesSchema, required: false }],
     category: { type: Schema.Types.ObjectId, ref: 'Category' },
-});
+}, { timestamps: true });
 
 export const Product = models.Product || mongoose.model('Product', ProductSchema);

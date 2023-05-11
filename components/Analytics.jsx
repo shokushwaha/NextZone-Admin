@@ -26,9 +26,9 @@ export default function Analytics() {
             for (const i of items)
                 sum = sum + i.price;
             setInventoryPrice(sum);
-        })
+        }).finally(() => setLoading(false))
 
-        setLoading(false);
+
     }, [])
     return (
         <div className="overflow-x-hidden">
