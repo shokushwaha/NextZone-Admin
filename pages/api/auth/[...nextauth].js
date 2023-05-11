@@ -17,7 +17,6 @@ export const authOptions = {
     adapter: MongoDBAdapter(clientPromise),
     callbacks: {
         session: async ({ session, user }) => {
-            console.log(user);
             if (!adminEmails.includes(md5(user?.email))) {
                 return false;
             }

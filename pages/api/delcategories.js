@@ -1,15 +1,15 @@
 import { mongooseConnect } from "@/lib/mongoose";
-import { isAdminRequest } from "./auth/[...nextauth]";
+import { isAdmin } from "./isAdmin";
 import { Category } from "@/models/Category";
 
 
-export default async function handler(req, res) {
+const handler = async (req, res) => {
     const { method } = req;
     await mongooseConnect();
-    await isAdminRequest(req, res);
 
-    if (method === "DELETE") {
+    if (method === "GET") {
         await Category.deleteMany({});
         res.json('ok');
     }
 }
+export default isAdmin(handler);

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ReactSortable } from "react-sortablejs";
 import Cookies from "js-cookie";
+import { SyncLoader } from "react-spinners";
 
 export default function ProductForm({
     _id,
@@ -60,24 +61,24 @@ export default function ProductForm({
         const formData = new FormData();
 
         for (const file of files) {
-            formData.append("images", file);
+            formData.append("file", file);
+            formData.append("upload_preset", "ecomnext")
         }
 
         setIsUploading(true);
         const data = await axios
-            .post("/api/upload", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
+            .post("https://api.cloudinary.com/v1_1/dt21djrjq/image/upload",
+                formData
+            )
             .then((response) => {
-                console.log(typeof (response.data));
-                setImages([...images, response.data]);
+                console.log(response.data.secure_url)
+                setImages([...images, response.data.secure_url]);
             })
             .catch((error) => {
                 console.error("Error: ", error);
             })
             .finally(() => setIsUploading(false));
+
     }
 
     useEffect(() => {
@@ -271,28 +272,16 @@ export default function ProductForm({
                         className="flex gap-3"
                     >
                         {images.map((item, i) => (
-                            <div key={i} className="relative w-20 h-20">
-                                <Image
-                                    src={`/upload/products/${item}`}
-                                    // src={item}
-                                    alt="Product image"
-                                    fill
-                                    sizes="100vw"
-                                    className="w-full h-auto"
-                                    style={{ objectFit: "cover" }}
-                                />
+                            <div key={i}>
+
+
+                                <img src={item} alt="product image" className="w-60  rounded-md mb-10" />
                             </div>
                         ))}
                     </ReactSortable>
                     {isUploading && (
-                        <div className="relative w-20 h-20">
-                            <Image
-                                src={"/upload/spinner.gif"}
-                                alt="Uploading..."
-                                fill
-                                sizes="100vw"
-                                style={{ objectFit: "cover" }}
-                            ></Image>
+                        <div className="py-4 w-20 h-20">
+                            <SyncLoader />
                         </div>
                     )}
                 </div>
