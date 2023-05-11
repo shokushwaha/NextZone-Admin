@@ -1,35 +1,30 @@
-import NextAuth, { getServerSession } from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
-import clientPromise from "@/lib/mongodb"
-const adminEmails = ['kushwahashobhit255@gmail.com'];
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import clientPromise from "@/lib/mongodb";
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import md5 from "md5";
+
+const adminEmails = ["6f1370b01cbabc921b8e87272e2fec40"];
 
 export const authOptions = {
+    debug: true,
     providers: [
-
         GoogleProvider({
-            clientId: process.env.GOOGLE_ID,
-            clientSecret: process.env.GOOGLE_SECRET
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         }),
     ],
     adapter: MongoDBAdapter(clientPromise),
     callbacks: {
-        session: ({ session, token, user }) => {
-            if (adminEmails.includes(session?.user?.email)) {
-                return session;
+        session: async ({ session, user }) => {
+            console.log(user);
+            if (!adminEmails.includes(md5(user?.email))) {
+                return false;
             }
-            else {
-                return false
-            }
-        }
-    }
-}
-export async function isAdminRequest(req, res) {
-    const session = await getServerSession(req, res, authOptions);
-    if (!adminEmails.includes(session?.user?.email)) {
-        res.status(401);
-        res.end();
-        throw 'Not An Admin!';
-    }
-}
+            session.user.isAdmin = true;
+            return session;
+        },
+    },
+};
+
 export default NextAuth(authOptions);

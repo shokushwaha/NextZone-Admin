@@ -1,16 +1,10 @@
-import Layout from "@/components/Layout"
-import Head from 'next/head'
+import Layout from "@/components/Layout";
+import { useSession, signIn, signOut } from "next-auth/react"
 
 export default function Orders() {
     return (
-        <>
-            <Head>
-                <title>Orders</title>
-            </Head>
-            <Layout>
-                Orders
-
-            </Layout>
-        </>
-    )
+        <Layout>
+            orders page
+        </Layout>
+    );
 }

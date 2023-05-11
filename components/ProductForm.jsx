@@ -1,169 +1,306 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import axios from "axios";
-import Spinner from "@/components/Spinner";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { ReactSortable } from "react-sortablejs";
+import Cookies from "js-cookie";
 
 export default function ProductForm({
     _id,
-    title: existingTitle,
-    description: existingDescription,
-    price: existingPrice,
-    images: existingImages,
-    category: assignedCategory,
-    properties: assignedProperties,
+    title,
+    description,
+    price,
+    images: oldImages,
+    category,
+    properties,
 }) {
-    const [title, setTitle] = useState(existingTitle || '');
-    const [description, setDescription] = useState(existingDescription || '');
-    const [category, setCategory] = useState(assignedCategory || '');
-    const [productProperties, setProductProperties] = useState(assignedProperties || {});
-    const [price, setPrice] = useState(existingPrice || '');
-    const [images, setImages] = useState(existingImages || []);
-    const [goToProducts, setGoToProducts] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
-    const [categories, setCategories] = useState([]);
     const router = useRouter();
-    useEffect(() => {
-        axios.get('/api/categories').then(result => {
-            setCategories(result.data);
-        })
-    }, []);
-    async function saveProduct(ev) {
-        ev.preventDefault();
-        const data = {
-            title, description, price, images, category,
-            properties: productProperties
-        };
-        if (_id) {
-            //update
-            await axios.put('/api/products', { ...data, _id });
-        } else {
-            //create
-            await axios.post('/api/products', data);
-        }
-        setGoToProducts(true);
-    }
-    if (goToProducts) {
-        router.push('/products');
-    }
-    async function uploadImages(ev) {
-        const files = ev.target?.files;
-        if (files?.length > 0) {
-            setIsUploading(true);
-            const data = new FormData();
-            for (const file of files) {
-                data.append('file', file);
-            }
-            const res = await axios.post('/api/upload', data);
-            setImages(oldImages => {
-                return [...oldImages, ...res.data.links];
-            });
-            setIsUploading(false);
-        }
-    }
-    function updateImagesOrder(images) {
-        setImages(images);
-    }
-    function setProductProp(propName, value) {
-        setProductProperties(prev => {
-            const newProductProps = { ...prev };
-            newProductProps[propName] = value;
-            return newProductProps;
+    const [productData, setProductData] = useState({
+        _id: _id || null,
+        title: title || "",
+        description: description || "",
+        price: price || "",
+        images: oldImages || [],
+        category: category || null,
+        properties: properties || [],
+    });
+
+    const [categoriesList, setCategoriesList] = useState([]);
+    const [images, setImages] = useState(productData.images || []);
+    const [isUploading, setIsUploading] = useState(false);
+    const [categoryProperties, setCategoryProperties] = useState([]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setProductData({
+            ...productData,
+            [name]: name === "category" && value === "" ? null : value,
         });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const csrfToken = Cookies.get("next-auth.csrf-token");
+
+        if (productData._id) {
+            await axios.put("/api/products", productData, {
+                headers: { "CSRF-Token": csrfToken },
+            });
+        } else {
+            await axios.post("/api/products", productData, {
+                headers: { "CSRF-Token": csrfToken },
+            });
+        }
+        router.push("/products");
+    };
+
+    async function uploadImages(e) {
+        const files = e.target.files;
+        const formData = new FormData();
+
+        for (const file of files) {
+            formData.append("images", file);
+        }
+
+        setIsUploading(true);
+        const data = await axios
+            .post("/api/upload", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                console.log(typeof (response.data));
+                setImages([...images, response.data]);
+            })
+            .catch((error) => {
+                console.error("Error: ", error);
+            })
+            .finally(() => setIsUploading(false));
     }
 
-    const propertiesToFill = [];
-    if (categories.length > 0 && category) {
-        let catInfo = categories.find(({ _id }) => _id === category);
-        propertiesToFill.push(...catInfo.properties);
-        while (catInfo?.parent?._id) {
-            const parentCat = categories.find(({ _id }) => _id === catInfo?.parent?._id);
-            propertiesToFill.push(...parentCat.properties);
-            catInfo = parentCat;
+    useEffect(() => {
+        axios.get("/api/categories").then((response) => {
+            setCategoriesList(response.data);
+        });
+    }, []);
+
+    useEffect(() => {
+        setProductData((p) => ({
+            ...p,
+            images,
+        }));
+    }, [images]);
+
+    const handleSelectedProperties = (index, value) => {
+        const properties = productData?.properties.map((item, i) => {
+            item.values = i === index ? value : item.values;
+            return item;
+        });
+
+        setProductData((p) => ({
+            ...p,
+            properties,
+        }));
+    };
+
+    const getCategoryProperties = async (_id) => {
+        const response = await axios.get("/api/categories", { params: { _id } });
+        return response.data;
+    };
+
+    const propertiesInitialized = useRef(false);
+
+    useEffect(() => {
+        if (!productData.category) {
+            return;
         }
-    }
+
+        const defaultProductProperties = [];
+        getCategoryProperties(productData.category).then((category) => {
+            setCategoryProperties(category?.properties);
+
+            category?.properties.map(({ _id, name }) => {
+                const existingProductProperty = productData.properties.find(
+                    (existingItem) => existingItem.property === _id
+                );
+                defaultProductProperties.push({
+                    property: _id,
+                    name,
+                    values: existingProductProperty?.values || "",
+                });
+            });
+
+            while (category?.parent_id) {
+                const category = getCategoryProperties(category?.parent_id).then(() => {
+                    setCategoryProperties((prev) => [...prev, category?.properties]);
+
+                    category?.properties.map(({ _id, name }) => {
+                        const existingProductProperty = productData.properties.find(
+                            (existingItem) => existingItem.property === _id
+                        );
+                        defaultProductProperties.push({
+                            property: _id,
+                            name,
+                            values: existingProductProperty?.values || "",
+                        });
+                    });
+                });
+            }
+        });
+
+        if (!propertiesInitialized.current) {
+            setProductData((p) => ({
+                ...p,
+                properties: defaultProductProperties,
+            }));
+            propertiesInitialized.current = true;
+        }
+    }, [productData.category, productData.properties]);
 
     return (
-        <form onSubmit={saveProduct}>
-            <label>Product name</label>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+            <label>Product title</label>
             <input
                 type="text"
-                placeholder="product name"
-                value={title}
-                onChange={ev => setTitle(ev.target.value)} />
+                placeholder="name"
+                name="title"
+                required
+                onChange={handleChange}
+                value={productData.title}
+            />
+
             <label>Category</label>
-            <select value={category}
-                onChange={ev => setCategory(ev.target.value)}>
-                <option value="">Uncategorized</option>
-                {categories.length > 0 && categories.map(c => (
-                    <option key={c._id} value={c._id}>{c.name}</option>
-                ))}
-            </select>
-            {propertiesToFill.length > 0 && propertiesToFill.map(p => (
-                <div key={p.name} >
-                    <label>{p.name[0].toUpperCase() + p.name.substring(1)}</label>
-                    <div>
-                        <select value={productProperties[p.name]}
-                            onChange={ev =>
-                                setProductProp(p.name, ev.target.value)
-                            }
-                        >
-                            {p.values.map(v => (
-                                <option key={v} value={v}>{v}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-            ))}
-            <label>
-                Photos
-            </label>
-            <div className="mb-2 flex flex-wrap gap-1">
-                <ReactSortable
-                    list={images}
-                    className="flex flex-wrap gap-1"
-                    setList={updateImagesOrder}>
-                    {!!images?.length && images.map(link => (
-                        <div key={link} className="h-24 bg-white p-4 shadow-sm rounded-sm border border-gray-200">
-                            <img src={link} alt="" className="rounded-lg" />
-                        </div>
+            {categoriesList.length ? (
+                <select
+                    required
+                    onChange={handleChange}
+                    name="category"
+                    defaultValue={productData.category}
+                >
+                    <option value="">Select Category</option>
+                    {categoriesList.map((item, i) => (
+                        <option key={i} value={item._id}>
+                            {item.name}
+                        </option>
                     ))}
-                </ReactSortable>
-                {isUploading && (
-                    <div className="h-24 flex items-center">
-                        <Spinner />
-                    </div>
-                )}
-                <label className="w-24 h-24 cursor-pointer text-center flex flex-col items-center justify-center text-sm gap-1 text-primary rounded-sm bg-white shadow-sm border border-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                    </svg>
-                    <div>
-                        Add image
-                    </div>
-                    <input type="file" onChange={uploadImages} className="hidden" />
-                </label>
-            </div>
-            <label>Description</label>
+                </select>
+            ) : (
+                <input value="Select category" readOnly />
+            )}
+
+            {productData.properties && categoryProperties.length > 0 ? (
+                <div>
+                    {categoryProperties.map((property, i) => {
+                        const existingProductProperty = productData.properties.find(
+                            (existingItem) => existingItem.property === property._id
+                        );
+                        return (
+                            <div key={i} className="flex gap-1 mb-2 w-3/4">
+                                <input
+                                    readOnly
+                                    type="text"
+                                    value={property.name}
+                                    className="mb-0 w-1/3"
+                                />
+                                <select
+                                    className="mb-0"
+                                    required
+                                    value={existingProductProperty?.values || ''}
+                                    onChange={(e) => handleSelectedProperties(i, e.target.value)}
+                                >
+                                    <option value="">Select variant</option>
+                                    {property.values?.split(",").map((value, i) => (
+                                        <option key={i} value={value.trim()}>
+                                            {value}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        );
+                    })}
+                </div>
+            ) : null}
+
+            <label>Product description</label>
             <textarea
                 placeholder="description"
-                value={description}
-                onChange={ev => setDescription(ev.target.value)}
-            />
-            <label>Price (in USD)</label>
-            <input
-                type="number" placeholder="price"
-                value={price}
-                onChange={ev => setPrice(ev.target.value)}
-            />
-            <button
-                type="submit"
-                className="text-white px-2 py-1  flex gap-1 bg-green-500 rounded-md shadow-md hover:bg-green-600">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-                </svg>
+                name="description"
+                onChange={handleChange}
+                value={productData.description}
+            ></textarea>
 
-                Save
+            <label>Price (USD)</label>
+            <input
+                type="number"
+                placeholder="price"
+                name="price"
+                required
+                onChange={handleChange}
+                value={productData.price}
+            />
+
+            <label>Photos</label>
+            <label className="w-24 h-24 cursor-pointer text-center flex flex-col items-center justify-center text-sm gap-1 text-primary rounded-sm bg-white shadow-sm border border-primary">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+                    />
+                </svg>
+                <div>Add image</div>
+                <input type="file" onChange={uploadImages} className="hidden" />
+            </label>
+
+            {!images.length ? (
+                <div className="my-2 text-sm">No photos are available</div>
+            ) : (
+                <div className="flex gap-3 my-2">
+                    <ReactSortable
+                        list={images}
+                        setList={setImages}
+                        className="flex gap-3"
+                    >
+                        {images.map((item, i) => (
+                            <div key={i} className="relative w-20 h-20">
+                                <Image
+                                    src={`/upload/products/${item}`}
+                                    // src={item}
+                                    alt="Product image"
+                                    fill
+                                    sizes="100vw"
+                                    className="w-full h-auto"
+                                    style={{ objectFit: "cover" }}
+                                />
+                            </div>
+                        ))}
+                    </ReactSortable>
+                    {isUploading && (
+                        <div className="relative w-20 h-20">
+                            <Image
+                                src={"/upload/spinner.gif"}
+                                alt="Uploading..."
+                                fill
+                                sizes="100vw"
+                                style={{ objectFit: "cover" }}
+                            ></Image>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            <button className="btn-primary">Save</button>
+            <button onClick={() => router.back()} className="btn-default">
+                Cancel
             </button>
         </form>
     );

@@ -1,43 +1,30 @@
 import Layout from "@/components/Layout";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import ProductForm from "@/components/ProductForm";
 import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-export default function DeleteProductPage() {
+export default function EditProduct() {
     const router = useRouter();
     const { id } = router.query;
-    const [productInfo, setProductInfo] = useState(null);
-    useEffect(() => {
-        if (!id) {
-            return;
-        }
-
-        axios.get('/api/products?id=' + id).then(response => {
-            setProductInfo(response.data);
-        })
-    }, [id]);
 
     const deleteProduct = async () => {
-        await axios.delete('/api/products?id=' + id);
-        goBack();
+        await axios.delete(`/api/products?id=${id}`)
+        router.push('/products');
     }
 
-    const goBack = () => {
-        router.push('/products')
-    }
-
-    return (<>
+    return (
         <Layout>
-            <h1 className="text-center pt-4 mb-10">
-                Do you really want to delete  <span className="text-blue-600 text-xl font-black">
-                    {productInfo?.title}?
-                </span>
-            </h1>
-            <div className="flex gap-2 justify-center">
-
-                <button className="btn-red" onClick={deleteProduct}>Yes</button>
-                <button className="btn-default" onClick={goBack}>No</button>
+            <div className="m-4 flex items-center flex-col">
+                <p className="text-blue-900 text-xl my-4">You want to delete this product ?</p>
+                <div className="flex my-4 gap-4">
+                    <button className="bg-orange-700 text-white rounded-md px-5 p-2" onClick={deleteProduct}>Yes</button>
+                    <Link href={"/products"} className="bg-blue-900 rounded-md text-white p-2">
+                        Cancel
+                    </Link>
+                </div>
             </div>
         </Layout>
-    </>)
+    );
 }

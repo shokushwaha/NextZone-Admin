@@ -2,56 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-img {
-  max-height: 100%
-}
-
-h1 {
-  @apply text-gray-800 mb-8 font-semibold text-xl;
-}
-
 input,
 textarea,
 select {
-  @apply border border-gray-200 rounded-sm w-full py-2 px-4;
-  @apply shadow-sm;
-  @apply mb-2;
+  @apply border-gray-300 border-2 rounded-md p-2 w-full mb-2
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-  @apply border-blue-900;
+  @apply border-blue-900
 }
 
-label {
-  @apply text-gray-900;
+h1 {
+  @apply text-blue-900 text-xl mb-2
+}
+
+.btn-primary {
+  @apply rounded-md bg-blue-900 text-white p-2 px-4 my-2
+}
+
+.btn-default {
+  @apply rounded-md bg-gray-200 p-2 px-4 m-2
 }
 
 table.basic {
   @apply w-full bg-white rounded-sm shadow-md;
 }
 
-table.basic thead tr td {
-  @apply text-sm text-gray-600 uppercase border-b border-gray-400 px-4 py-2;
+table.basic thead tr td,
+table.basic thead tr th {
+  @apply text-sm text-gray-600 uppercase border-b border-gray-200 px-4 py-2;
 }
 
 table.basic tr td {
-  @apply px-4 py-2;
+  @apply px-4 py-1;
 }
 
-table.basic a {
-  @apply inline-flex mx-1 items-center gap-1 bg-bgPrimary;
-}
-
-.btn-primary {
-  @apply bg-blue-900 text-white px-4 rounded-md py-1 bg-bgPrimary;
-}
-
-.btn-delete {
-  @apply bg-red-500;
-}
-
-.stat-box {
-  @apply flex flex-col bg-textTertiary rounded-xl h-40 w-40 items-center justify-center shadow-xl;
+table.basic a,
+table.basic .links {
+  @apply px-4 rounded-sm inline-flex mx-1 items-center gap-1 text-sm py-1;
 }

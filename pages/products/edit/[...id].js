@@ -2,27 +2,31 @@ import Layout from "@/components/Layout";
 import ProductForm from "@/components/ProductForm";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export default function EditProductPage() {
+export default function EditProduct() {
     const router = useRouter();
     const { id } = router.query;
-
-    const [productInfo, setProductInfo] = useState(null);
+    const [product, setProduct] = useState({});
 
     useEffect(() => {
-        axios.get('/api/products?id=' + id).then(response => {
-            setProductInfo(response.data);
-        })
+        if (!id) return;
 
-    }, []);
+        axios
+            .get(`/api/products?id=${id}`)
+            .then((response) => {
+                console.log(response.data);
+                setProduct(response.data);
+            });
+
+    }, [id]);
 
     return (
-        <>
-            <Layout>
+        <Layout>
+            <div className="m-4">
                 <h1>Edit Product</h1>
-                {productInfo && <ProductForm {...productInfo} />}
-            </Layout>
-        </>
-    )
+                {Object.keys(product).length > 0 && <ProductForm {...product} />}
+            </div>
+        </Layout>
+    );
 }

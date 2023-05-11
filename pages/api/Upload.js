@@ -1,48 +1,42 @@
-import multiparty from 'multiparty';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import fs from 'fs';
-import mime from 'mime-types';
-import { isAdminRequest } from './auth/[...nextauth]';
-import { mongooseConnect } from '@/lib/mongoose';
+import multiparty from "multiparty";
+import fs from "fs";
+import { nanoid } from "nanoid";
+import { isAdmin } from "./isAdmin";
 
-const bucketName = 'shobhit-next-ecommerce';
-
-export default async function handle(req, res) {
-    await mongooseConnect();
-    await isAdminRequest(req, res);
+const handler = async (req, res) => {
+    if (req.method !== "POST") return res.json("Bad request");
 
     const form = new multiparty.Form();
-    const { fields, files } = await new Promise((resolve, reject) => {
-        form.parse(req, (err, fields, files) => {
-            if (err) reject(err);
-            resolve({ fields, files });
+    const uploadedFiles = [];
+
+    await new Promise((resolve, reject) => {
+        form.parse(req, (error, fileds, files) => {
+            if (error) reject(error);
+
+            for (const file of files.images) {
+                let ext = file.originalFilename.split(".")[1];
+                let newFileName = nanoid() + '.' + ext;
+                fs.copyFile(file.path, `public/upload/products/${newFileName}`, () => {
+                    uploadedFiles.push(newFileName);
+                    if (uploadedFiles.length === files.images.length) {
+                        resolve();
+                    }
+                });
+            }
         });
     });
-    console.log('length:', files.file.length);
-    const client = new S3Client({
-        region: 'us-east-1',
-        credentials: {
-            accessKeyId: process.env.S3_ACCESS_KEY,
-            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-        },
-    });
-    const links = [];
-    for (const file of files.file) {
-        const ext = file.originalFilename.split('.').pop();
-        const newFilename = Date.now() + '.' + ext;
-        await client.send(new PutObjectCommand({
-            Bucket: bucketName,
-            Key: newFilename,
-            Body: fs.readFileSync(file.path),
-            ACL: 'public-read',
-            ContentType: mime.lookup(file.path),
-        }));
-        const link = `https://${bucketName}.s3.amazonaws.com/${newFilename}`;
-        links.push(link);
+
+    if (uploadedFiles.length) {
+        return res.json(uploadedFiles[0]);
+    } else {
+        return res.json("Something went wrong!");
     }
-    return res.json({ links });
 }
 
 export const config = {
-    api: { bodyParser: false },
+    api: {
+        bodyParser: false,
+    },
 };
+
+export default isAdmin(handler);
