@@ -201,8 +201,12 @@ export default function Categories() {
                 <button
                     type="button"
                     onClick={addCategoryProperty}
-                    className="btn-primary !bg-blue-700 block !mt-4"
+                    className="primary-btn py-2 px-4"
                 >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+
                     Add property
                 </button>
                 {properties.length > 0 &&
@@ -227,17 +231,23 @@ export default function Categories() {
                             <button
                                 onClick={() => removeProperty(index)}
                                 type="button"
-                                className="btn-red"
+                                className="flex  rounded-md py-1 px-3 items-center bg-red-400 shadow-md hover:bg-red-500"
                             >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                                </svg>
+
                                 Remove
                             </button>
                         </div>
                     ))}
+                <div className="flex items-center gap-2 pt-2">
 
-                <button type="button" className="btn-default" onClick={cancelEdit}>
-                    Cancel
-                </button>
-                <button className="btn-primary">Save</button>
+                    <button type="button" className=" bg-red-400 py-1 px-4  w-30 rounded-md shadow-lg hover:scale-110" onClick={cancelEdit}>
+                        Cancel
+                    </button>
+                    <button className="py-1 px-4 bg-green-400 w-30 rounded-md shadow-lg hover:scale-110">Save</button>
+                </div>
             </form>
 
             <div className="p-6 my-4">
@@ -259,7 +269,7 @@ export default function Categories() {
                                     <td>
                                         <button
                                             onClick={() => editCategory(item._id)}
-                                            className="links"
+                                            className="links primary-btn"
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -281,7 +291,7 @@ export default function Categories() {
                                             onClick={() => {
                                                 setDeleteCategoryId(item._id);
                                             }}
-                                            className="links"
+                                            className="links delete-btn"
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"

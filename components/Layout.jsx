@@ -26,10 +26,10 @@ export default function Layout({ children }) {
     }
 
     return (
-        <div className="bg-blue-900 w-screen h-screen flex items-center align-middle">
+        <div className="bg-bgPrimary w-screen h-screen flex items-center align-middle">
             <div className="w-full min-h-screen flex">
                 <Nav />
-                <div className="bg-white flex-grow m-2 -ml-1 rounded-lg">
+                <div className="bg-bgSecondary flex-grow ">
                     {children}
                 </div>
             </div>

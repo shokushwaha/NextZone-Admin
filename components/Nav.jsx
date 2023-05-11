@@ -4,10 +4,10 @@ import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 
 export default function Nav() {
-    const inactiveLink = "flex gap-1 p-1";
-    const activeLink = inactiveLink + " bg-white text-black rounded-sm";
+    const inactiveLink = "flex gap-1 p-1 mx-1  px-2";
+    const activeLink = inactiveLink + " bg-bgSecondary text-black font-bold rounded-sm";
     const inactiveIcon = "w-6 h-6";
-    const activeIcon = inactiveIcon + " text-primary";
+    const activeIcon = inactiveIcon + "  text-textPrimary scale-110";
 
     const router = useRouter();
     const { pathname } = router;
@@ -18,7 +18,7 @@ export default function Nav() {
     };
 
     return (
-        <aside className="top-0 text-white fixed w-full bg-bgGray h-full md:static md:w-auto transition-all">
+        <aside className="top-0 text-white fixed w-full bg-bgGray h-full md:static md:w-auto transition-all px-4">
             <Logo />
             <nav className="flex flex-col gap-2">
                 <div className="mb-4 mr-4"></div>
@@ -32,7 +32,9 @@ export default function Nav() {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="w-6 h-6"
+                        className={
+                            pathname === "/" ? activeIcon : inactiveIcon
+                        }
                     >
                         <path
                             strokeLinecap="round"

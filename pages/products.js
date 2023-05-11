@@ -16,7 +16,7 @@ export default function Products() {
         <Layout>
             <Link
                 href={"/products/new"}
-                className="bg-blue-900 m-4 mx-6 inline-block rounded-md text-white p-2"
+                className=" save-btn "
             >
                 Add New Product
             </Link>
@@ -37,7 +37,7 @@ export default function Products() {
                                     <td>{item.title}</td>
                                     <td>${item.price}</td>
                                     <td>
-                                        <Link href={`/products/edit/${item._id}`} className="links">
+                                        <Link href={`/products/edit/${item._id}`} className="links primary-btn">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
@@ -54,7 +54,7 @@ export default function Products() {
                                             </svg>
                                             Edit
                                         </Link>
-                                        <Link href={`/products/delete/${item._id}`} className="links">
+                                        <Link href={`/products/delete/${item._id}`} className="links delete-btn">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
