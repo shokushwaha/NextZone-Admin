@@ -9,6 +9,7 @@ export default function Analytics() {
     const [loading, setLoading] = useState(true);
     const [countProducts, setCountProducts] = useState(0);
     const [countCategories, setCountCategories] = useState(0);
+    const [orders, setOrders] = useState([]);
     const [inventoryPrice, setInventoryPrice] = useState(0);
     useEffect(() => {
         axios.get('/api/countproducts').then(response => {
@@ -20,6 +21,25 @@ export default function Analytics() {
         }).catch(err => console.log(err.response.data))
 
 
+        axios.get('/api/orders').then(response => {
+            setOrders(response.data);
+            // console.log(response.data)
+            console.log("ssss");
+            console.log(orders)
+            let paid = 0;
+            let totalOrders = orders.length;
+
+            for (const order in orders) {
+                console.log(typeof (order))
+                if (order.paid === true) {
+                    // console.log(i.name)
+                    paid++;
+
+                }
+            }
+            console.log(paid);
+        }).catch(err => console.log(err.response.data))
+
         axios.get('/api/products').then(res => {
             const items = res.data;
             let sum = 0;
@@ -30,6 +50,9 @@ export default function Analytics() {
 
 
     }, [])
+
+
+
     return (
         <div className="overflow-x-hidden">
 
@@ -125,7 +148,7 @@ export default function Analytics() {
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
 
-                                    $ 1
+                                    $ 1000
                                 </span>
                             </div>
                         </div>
@@ -146,7 +169,7 @@ export default function Analytics() {
                                     Paid Orders
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
-                                    1
+                                    10
                                 </span>
                             </div>
                         </div>
@@ -167,7 +190,7 @@ export default function Analytics() {
                                     Sales this month
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
-                                    1
+                                    $4000
                                 </span>
                             </div>
                         </div>
