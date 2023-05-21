@@ -3,6 +3,8 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import Analytics from "@/components/Analytics";
 import { useState, useEffect } from "react";
 import Head from "next/head";
+import { Order } from "@/models/Orders";
+import { mongooseConnect } from "@/lib/mongoose";
 export default function Home() {
   const { data: session } = useSession();
 
@@ -46,3 +48,4 @@ export default function Home() {
     </Layout>
   );
 }
+

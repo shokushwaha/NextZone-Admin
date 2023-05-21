@@ -1,3 +1,7 @@
+import { mongooseConnect } from "@/lib/mongoose";
+import { Client } from "@/models/Customer";
+import { Order } from "@/models/Orders";
+import { Product } from "@/models/Product";
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { DotLoader } from 'react-spinners'
@@ -34,11 +38,14 @@ export default function Analytics() {
     }
     const fetchOrderDetails = async () => {
         const response = await axios.get('/api/orders');
+
         setOrders(response.data);
+
         let paidNums = 0;
         let salesNum = 0;
         let orderItemNum = 0;
-        for (let i = 0; i < orders.length; i++) {
+        console.log(orders)
+        for (let i = 0; i < orders && orders.length; i++) {
             const info = orders[i].line_items;
             for (let j = 0; j < info.length; j++) {
                 let x = info[j].quantity;
@@ -175,7 +182,7 @@ export default function Analytics() {
                                     Total Orders
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
-                                    {orders.length}
+                                    {orders && orders.length}
                                 </span>
                             </div>
                         </div>
@@ -213,7 +220,7 @@ export default function Analytics() {
                                     Total Unpaid Orders
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
-                                    {orders.length - paidOrders}
+                                    {orders && orders.length - paidOrders}
                                 </span>
                             </div>
                         </div>
