@@ -1,14 +1,11 @@
 import Nav from "@/components/Nav";
 import { useSession, signIn, signOut } from "next-auth/react"
 import Head from "next/head";
+// import { useRouter } from "next/router";
 
 export default function Layout({ children }) {
     const { data: session } = useSession();
 
-    const login = async (e) => {
-        e.preventDefault();
-        await signIn("google")
-    }
     if (!session) {
         return (
             <div className="bg-gray-200 w-screen h-screen flex items-center align-middle px-28">
@@ -29,7 +26,7 @@ export default function Layout({ children }) {
                     <div className="text-center first-letter:flex flex-col items-center justify-center gap-10    ">
 
                         <button
-                            onClick={login}
+                            onClick={() => signIn('google')}
                             className="bg-white p-2 px-4 rounded-lg hover:bg-black hover:text-gray-200 hover:shadow-xl"
                         >
                             Login with Google
