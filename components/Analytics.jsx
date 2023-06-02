@@ -16,15 +16,22 @@ export default function Analytics() {
     const [orderItemQuantity, setOrderItemQuantity] = useState(0);
     const [paidOrders, setPaidOrders] = useState(0);
     const [sales, setSales] = useState(0);
+    const [adminCount, setAdminCount] = useState(0);
 
     useEffect(() => {
 
         fetchOrderDetails();
         fetchProducts();
         fetchCategories();
+        fetchAdmin();
         setLoading(false);
 
     }, [])
+    const fetchAdmin = async () => {
+        const response = await axios.get('/api/admin');
+        console.log(response.data)
+        setAdminCount(response.data.length);
+    }
     const fetchProducts = async () => {
         const response = await axios.get('/api/countproducts');
         setCountProducts(response.data);
@@ -37,31 +44,34 @@ export default function Analytics() {
 
     }
     const fetchOrderDetails = async () => {
-        const response = await axios.get('/api/orders');
 
-        setOrders(response.data);
+        await axios.get('/api/orders').then(response => {
 
-        let paidNums = 0;
-        let salesNum = 0;
-        let orderItemNum = 0;
-        console.log(orders)
-        for (let i = 0; i < orders && orders.length; i++) {
-            const info = orders[i].line_items;
-            for (let j = 0; j < info.length; j++) {
-                let x = info[j].quantity;
-                let y = info[j].price_data.unit_amount;
-                orderItemNum = orderItemNum + x;
-                salesNum = salesNum + x * y;
-            }
-            if (orders[i].paid === true)
-                paidNums++;
-        }
-        setPaidOrders(paidNums);
-        setSales(salesNum);
-        setOrderItemQuantity(orderItemNum);
+            setOrders(response.data);
+
+
+        })
 
 
     }
+
+    let paidNums = 0;
+    let salesNum = 0;
+    let orderItemNum = 0;
+    for (let i = 0; i < orders.length; i++) {
+        let info = orders[i].line_items;
+
+        for (let j = 0; j < info.length; j++) {
+            let x = info[j].quantity;
+            let y = info[j].price_data.unit_amount;
+            orderItemNum = orderItemNum + x;
+            salesNum = salesNum + x * y;
+        }
+        if (orders[i].paid === true)
+            paidNums++;
+    }
+
+
 
 
 
@@ -138,8 +148,7 @@ export default function Analytics() {
                                     Total Admins
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
-
-                                    1
+                                    {adminCount}
                                 </span>
                             </div>
                         </div>
@@ -159,9 +168,9 @@ export default function Analytics() {
 
                                     Total Sales
                                 </span>
-                                <span className="text-4xl mt-2 font-extrabold text-center">
+                                <span className="text-auto mt-2 font-extrabold text-center">
 
-                                    ${sales / 10}
+                                    ${salesNum}
                                 </span>
                             </div>
                         </div>
@@ -182,7 +191,7 @@ export default function Analytics() {
                                     Total Orders
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
-                                    {orders && orders.length}
+                                    {orders.length}
                                 </span>
                             </div>
                         </div>
@@ -203,7 +212,7 @@ export default function Analytics() {
                                     Total Paid Orders
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
-                                    {paidOrders}
+                                    {paidNums}
                                 </span>
                             </div>
                         </div>
@@ -220,7 +229,7 @@ export default function Analytics() {
                                     Total Unpaid Orders
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
-                                    {orders && orders.length - paidOrders}
+                                    {orders && orders.length - paidNums}
                                 </span>
                             </div>
                         </div>
@@ -237,7 +246,7 @@ export default function Analytics() {
                                     Total Items Sold
                                 </span>
                                 <span className="text-4xl mt-2 font-extrabold text-center">
-                                    {orderItemQuantity}
+                                    {orderItemNum}
                                 </span>
                             </div>
                         </div>

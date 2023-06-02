@@ -13,6 +13,8 @@ const ProductSchema = new Schema({
     images: [{ type: String }],
     properties: [{ type: ProductPropertiesSchema, required: false }],
     category: { type: Schema.Types.ObjectId, ref: 'Category' },
+    discount: { type: Number, default: 0 },
+    stars: { type: [Number], default: [] },
     reviews: {
         type: [String],
         default: []

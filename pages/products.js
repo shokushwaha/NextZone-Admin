@@ -28,6 +28,7 @@ export default function Products() {
                         <tr>
                             <td>Product</td>
                             <td>Price</td>
+                            <td>Discount</td>
                             <td>Action</td>
                         </tr>
                     </thead>
@@ -37,6 +38,8 @@ export default function Products() {
                                 <tr key={i}>
                                     <td>{item.title}</td>
                                     <td>${item.price}</td>
+
+
                                     <td>
                                         <Link href={`/products/edit/${item._id}`} className="links primary-btn">
                                             <svg

@@ -8,7 +8,7 @@ const handler = async (req, res) => {
     await mongooseConnect();
 
     if (method === "POST") {
-        const { title, description, price, images, category, properties } =
+        const { title, description, price, images, category, properties, discount } =
             req.body;
 
         const productDoc = await Product.create({
@@ -18,10 +18,11 @@ const handler = async (req, res) => {
             images,
             category,
             properties,
+            discount
         });
         res.json(productDoc);
     } else if (method === "PUT") {
-        const { _id, title, description, price, images, category, properties } =
+        const { _id, title, description, price, images, category, properties, discount } =
             req.body;
         const productDoc = await Product.updateOne(
             { _id },
@@ -32,6 +33,7 @@ const handler = async (req, res) => {
                 images,
                 category,
                 properties,
+                discount
             }
         );
         res.json(productDoc);

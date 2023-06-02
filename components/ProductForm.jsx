@@ -14,6 +14,7 @@ export default function ProductForm({
     images: oldImages,
     category,
     properties,
+    discount
 }) {
     const router = useRouter();
     const [productData, setProductData] = useState({
@@ -24,6 +25,7 @@ export default function ProductForm({
         images: oldImages || [],
         category: category || null,
         properties: properties || [],
+        discount: discount || 0
     });
 
     const [categoriesList, setCategoriesList] = useState([]);
@@ -160,6 +162,9 @@ export default function ProductForm({
         }
     }, [productData.category, productData.properties]);
 
+
+
+
     return (
         <form onSubmit={handleSubmit} encType="multipart/form-data">
             <label>Product title</label>
@@ -241,6 +246,15 @@ export default function ProductForm({
                 onChange={handleChange}
                 value={productData.price}
             />
+            <label>Discount(%)</label>
+            <input
+                type="number"
+                placeholder="discount"
+                name="discount"
+                required
+                onChange={handleChange}
+                value={productData.discount}
+            />
 
             <label>Photos</label>
             <label className="w-24 h-24 cursor-pointer text-center flex flex-col items-center justify-center text-sm gap-1 text-primary rounded-sm bg-white shadow-sm border border-primary">
@@ -305,6 +319,7 @@ export default function ProductForm({
 
                     Cancel
                 </button>
+
             </div>
         </form>
     );
